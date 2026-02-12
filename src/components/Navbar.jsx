@@ -1,8 +1,10 @@
 import React from 'react'
 import { FaBlog, FaHome, FaPlusSquare, FaSignOutAlt } from 'react-icons/fa';
 import { NavLink } from "react-router-dom";
+import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ onLogout }) => {
+
   return (
     <nav className="navbar">
         <div className="navbar-container">
@@ -24,8 +26,8 @@ const Navbar = () => {
             <div className="navbar-actions">
                 <span className="user-name">Hi, User</span>
 
-                <button className="logout-btn">
-                    <FaSignOutAlt /> Logout
+                <button className="logout-btn" onClick={onLogout}>
+                    <FaSignOutAlt  /> Logout
                 </button>
             </div>
         </div>

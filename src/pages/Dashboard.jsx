@@ -1,13 +1,43 @@
-import React from 'react'
+
 import Navbar from '../components/Navbar';
+import { Navigate, useNavigate } from "react-router-dom";
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { FaPlus } from 'react-icons/fa';
 import './Dashboard.css'
+import {useEffect, useState } from 'react';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+
+   const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/posts");
+      const data = await response.json();
+      setPosts(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+    useEffect(() => {
+    fetchData();
+  }, []);
+
+const handleLogout = () => {
+
+    console.log("click from dashboard");
+    localStorage.removeItem("loginData");
+    localStorage.removeItem("authData");
+    // localStorage.clear()
+    navigate("/login");
+  };
+
   return (
+
     <div className="dashboard-page">
-      <Navbar />
+
+       <Navbar onLogout={handleLogout} />
 
       <main className="dashboard-main">
         <div className="dashboard-welcome">
@@ -43,83 +73,42 @@ const Dashboard = () => {
           </div>
 
           <div className="posts-grid">
-
-            {/* Static Post Card 1 */}
             <div className="post-card">
-              <div className="post-image-container">
-                <img 
-                    src="" 
-                    alt="Post"
-                    className='post-card-image' 
-                />
+            {posts.map((post) => (
+              <><div className="post-image-container">
+                <img
+                  src={post.image}
+                  alt="Post"
+                  className='post-card-image' />
 
                 <div className="post-actions">
                   <button className="action-btn edit-btn" title="Edit Post">
-                    <MdEdit size={22} color="#ffffff"/>
+                    <MdEdit size={22} color="#ffffff" />
                   </button>
 
                   <button className="action-btn delete-btn" title="Delete Post">
-                    <MdDelete size={22} color="#ffffff"/>
+                    <MdDelete size={22} color="#ffffff" />
                   </button>
                 </div>
-              </div>
+              </div><div className="post-card-content">
+                  <div className="post-meta">
+                    <span className="post-author">By admin</span>
+                    <span className="post-data">Recent</span>
+                  </div>
 
-              <div className="post-card-content">
-                <div className="post-meta">
-                  <span className="post-author">By Admin</span>
-                  <span className="post-data">Recent</span>
-                </div>
+                  <h3 className="post-card-title">{post.title}</h3>
 
-                <h3 className="post-card-title">Sample Post Title</h3>
+                  <p className="post-card-description">
+                    {post.description}
+                  </p>
 
-                <p className="post-card-description">
-                  This is a sample static description to maintain the UI design without Author
-                </p>
-
-                <button className="read-more-btn">
-                  Read More
-                </button>
-              </div>
-            </div>
-
-            {/* static post card 2 */}
-            <div className="post-card">
-              <div className="post-image-container">
-                <img 
-                    src="" 
-                    alt="Post"
-                    className="post-card-image"
-                />
-
-                <div className="post-actions">
-                  <button className="action-btn edit-btn" >
-                    <MdEdit size={22} color="#ffffff"/>
+                  <button className="read-more-btn">
+                    Read More
                   </button>
+                </div></>
 
-                  <button className="action-btn delete-btn" >
-                    <MdDelete size={22} color="#ffffff"/>
-                  </button>
-                </div>
-              </div>
-
-              <div className="post-card-content">
-                <div className="post-meta">
-                  <span className="post-author">By User</span>
-                  <span className="post-data">Recent</span>
-                </div>
-
-                <h3 className="post-card-title">Another Static Post</h3>
-
-                <p className="post-card-description">
-                  Static content example to keep the dashboard layout an stylist
-                </p>
-
-                <button className="read-more-btn">
-                  Read More
-                </button>
-              </div>
-            </div>
-
+            ))}
+             </div>
           </div>
         </section>
       </main>

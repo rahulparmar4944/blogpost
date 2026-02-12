@@ -10,6 +10,7 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import AuthGuard from './auth/AuthGuard'
 import { ToastContainer } from "react-toastify";
 
 const DefaultRoute = () => {
@@ -28,21 +29,22 @@ function App() {
     },
     {
       path: "/login",
-      element: <Login />,
+      element: <AuthGuard required ={false}><Login /></AuthGuard>,
     },
     {
       path: "/register",
-      element: <Register />,
+      element: <AuthGuard required ={false}><Register /></AuthGuard>,
     },
     {
       path: "/dashboard",
-      element: <Dashboard />,
+      element: <AuthGuard required ={true}><Dashboard /></AuthGuard>,
     },
   ]);
 
   return (
     <>
       <RouterProvider router={router} />
+      
       <ToastContainer
         position="top-right"
         autoClose={1000}
