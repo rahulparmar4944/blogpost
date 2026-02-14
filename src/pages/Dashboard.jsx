@@ -77,7 +77,7 @@ const handleLogout = () => {
             {posts.map((post) => (
               <><div className="post-image-container">
                 <img
-                  src={post.image}
+                  src={post.image || ""}
                   alt="Post"
                   className='post-card-image' />
 
