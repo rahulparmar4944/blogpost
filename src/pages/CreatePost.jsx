@@ -23,6 +23,7 @@ imageType: "url",
 });
 const [errors, setErrors] = useState({});
 const [imagePreview, setImagePreview] = useState(null);
+const [isEditMode, setIsEditMode] = useState(false);
 const fileInputRef = React.useRef(null);
 const { id } = useParams();
 

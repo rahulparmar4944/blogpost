@@ -4,7 +4,7 @@
         "id":"1",
         "title": "Title 1",
         "description": "Lorem Ipsum is simply dummy text of the priority",
-        "author": "Rahul Parmar",
+        "author": "Android",
         "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGa70BgePn1Rsf41oiG6ac0_TAzpKXj4d9qg&s",
         "createAt": "2026-02-06t10:41:07.837Z"
         },
@@ -12,7 +12,15 @@
         "id":"2",
         "title": "Title 2",
         "description": "Lorem Ipsum is simply dummy text of the priority",
-        "author": "Rahul Parmar",
+        "author": "React",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGa70BgePn1Rsf41oiG6ac0_TAzpKXj4d9qg&s",
+        "createAt": "2026-02-06t10:41:07.837Z"
+        },
+        {
+        "id":"3",
+        "title": "Title 3",
+        "description": "Lorem Ipsum is simply dummy text of the priority",
+        "author": "Javascript",
         "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGa70BgePn1Rsf41oiG6ac0_TAzpKXj4d9qg&s",
         "createAt": "2026-02-06t10:41:07.837Z"
         }

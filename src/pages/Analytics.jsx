@@ -1,132 +1,202 @@
-import React from 'react'
-import {
-BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
-} from 'recharts';
-import Navbar from '../components/Navbar';
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
 import "./Analytics.css";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const Analytics = () => {
 
-    const charData = [
-        { name: 'Admin', posts: 5},
-        { name: 'User', posts: 3},
-        { name: 'Test', posts: 4},
-        { name: 'Demo', posts: 2},
-    ];
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPage = 5;
 
-    const headers = [
-        { label: 'Id', id: 'id' },
-        { label: 'Title', id: 'title' },
-        { label: 'Author', id: 'author' },
-        { label: 'Date', id: 'createdAt' }
-    ];
+    useEffect(() => {
+      fetch('/db.json')
+        .then((res) => res.json())
+        .then((data) => {
+          setPosts(data.posts || []);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }, []);
 
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+    const authorStats = posts.reduce((acc, post) => {
+        const author = post.author || 'Unknown';
+        acc[author] = (acc[author] || 0) + 1;
+        return acc;
+    }, {});
+
+  const chartData = Object.keys(authorStats).map(author => ({
+    name: author,
+    posts: authorStats[author]
+  }))
+
+    const indexofLastPost = currentPage * postsPage;
+    const indexofFirstPost = indexofLastPost - postsPage;
+    const currentPosts = posts.slice(indexofFirstPost, indexofLastPost);
+    const totalPage = Math.ceil(posts.length / postsPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    //example and diff.of ceil
+
+  const headers = [
+    { label: "ID", key: "id" },
+    { label: "Author", key: "author" },
+    { label: "Title", key: "title" },
+    { label: "Date", key: "createAt" },
+    { label: "Action", key: "" },
+  ];
+
+  const COLORS = ["#0088fe", "#00d49f", "#ffbb28", "#ff8042"];
+
   return (
     <div className="analytics-page">
       <Navbar />
       <main className="analytics-main">
         <header className="analytics-header">
-            <h1>Blog Analytics</h1>
-            <p>Insights into your blog's performance and activity.</p>
+          <h1>Blog Analytics</h1>
+          <p>Insights into your blog performance and activities</p>
         </header>
 
         <div className="charts-container">
-            <div className="chart-card">
-                <h3>Posts preview </h3>
-                <div className="chart-wrapper">
-                <ResponsiveContainer>
-                    <BarChart data={charData}>
-                        <CartesianGrid strokeDasharray="3 3"/>
-                        <XAxis />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar 
-                            datakey="posts"
-                            fill="#8884d8"
-                            name="Number of Posts"
-                        />
-                    </BarChart>
-                </ResponsiveContainer>
+          
+          {/* Bar Chart */}
+          <div className="chart-card">
+            <h3>Posts per Author</h3>
+            <div className="chart-wrapper">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar
+                    dataKey="posts"
+                    fill="#8884d8"
+                    name="Number of Posts"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-        </div>
+          </div>
 
-        <div className="chart-card">
+          {/* Pie Chart */}
+          <div className="chart-card">
             <h3>Distribution</h3>
             <div className="chart-wrapper">
-                <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie 
-                            data={charData}
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="posts"
-                            label
-                            >
-
-                                {charData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} 
-                                />
-                                ))}
-                        </Pie>
-                        <Tooltip />
-                    </PieChart>
-                </ResponsiveContainer>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="posts"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-        </div>
+          </div>
         </div>
 
+        {/* Table Section */}
         <div className="posts-table-section">
-            <h3>All Posts</h3>
-            <div className="table-wrapper">
-                <table className="analytics-table">
-                    <thead>
-                            <tr>
-                         {headers.map((header, index) => (  
-                                <th>{header.label}</th>
-                            ))}
+          <h3>All Posts</h3>
+          <div className="table-wrapper">
+            <table className="analytics-table">
+              <thead>
+                <tr>
+                  {headers.map((header, index) => (
+                    <th key={index}>{header.label}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(
+                  currentPosts.map((post, idx) => (
+                    <tr key={post.id}>
+                      <td>{post.id}</td>
+                      <td>{post.author}</td>
+                      <td>{post.title}</td>
+                      <td>{post.createAt ? new Date(post.createAt).toLocaleDateString() : ''}</td>
+                      <td className="action-button">
+                        <button 
+                            className="edit-btn"
+                            onClick={() => handleEdit(post.id)}
+                            title="Edit"
+                        >
+                            ✏️
+                        </button>
+                        <button 
+                            className="delete-btn"
+                            onClick={() => handleEdit(post.id)}
+                            title="Delete"
+                        >
+                            🗑
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-                            </tr>
-            
-                        
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>React Basics</td>
-                            <td>admin</td>
-                            <td>16/02/2026</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Undersatndung Hooks</td>
-                            <td>user</td>
-                            <td>15/02/2026</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Javascript</td>
-                            <td>test</td>
-                            <td>14/02/2026</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="pagination">
-                <button className="page-btn"> Previous </button>
-                <button className="page-btn active"> 1 </button>
-                <button className="page-btn"> 2 </button>
-                <button className="page-btn"> 3 </button>
-                <button className="page-btn"> Next </button>
-            </div>
+          {/* Pagination */}
+          <div className="pagination">
+            <button 
+                  onClick={() =>paginate(currentPage - 1)}
+                  disabled ={currentPage===1}
+                  className="page-btn"
+            >
+                Previous
+            </button>
+            {[...Array(totalPage).keys()].map(number=>(
+                <button
+                    key={number+1}
+                    onClick={()=>paginate(number+1)}
+                    className={`page-btn ${currentPage===number+1?'active':''}`}
+                 >
+                    {number+1}
+                </button>
+            ))}
+            <button
+                onClick={()=>paginate(currentPage+1)}
+                disabled={currentPage===totalPage}
+                className="page-btn"
+                >
+                    Next
+                </button>
+          </div>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Analytics
+export default Analytics;

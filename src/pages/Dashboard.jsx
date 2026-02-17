@@ -9,6 +9,11 @@ import {useEffect, useState } from 'react';
 const Dashboard = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+const handleClick = (postId) => {
+navigate(`/post-details/${postId}`);
+};
 
    const fetchData = async () => {
     try {
@@ -32,20 +37,19 @@ const handleLogout = () => {
     // localStorage.clear()
     navigate("/login");
   };
-  const handleEdit = (postId) => {
-    Navigate(`/edit-post/${postId}`);
-}
+  
+   const handleEdit = (post) => {
+    navigate(`/edit-post/${post.id}`);
+  };
 
-const handlePost = (postId) => {
-    Navigate(`/post/${postId}`);
+const handleDelete = (postId) => {
+    navigate(`/post/${postId}`);
 }
   return (
 
     <div className="dashboard-page">
 
-       <Navbar 
-       
-       onLogout={handleLogout} />
+       <Navbar onLogout={handleLogout} />
 
       <main className="dashboard-main">
         <div className="dashboard-welcome">
@@ -81,44 +85,52 @@ const handlePost = (postId) => {
           </div>
 
           <div className="posts-grid">
-            <div className="post-card">
-            {posts.map((post) => (
-              <><div className="post-image-container">
+        {( posts.map((post) => (
+            <div className="post-card" key={post.id}>
+              <div className=".post-image-container">
                 <img
-                  src={post.image}
-                  alt="Post"
-                  className='post-card-image' />
+                  src={post.image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500"}
+                  alt={post.title}
+                  className="post-card-image"
+                />
 
                 <div className="post-actions">
-                  <button className="action-btn edit-btn" title="Edit Post" onClick={() => handleEdit(post.id)}>
+                  <button
+                    className="action-btn edit-btn"
+                    title="Edit Post" 
+                    onClick={() =>  handleEdit(post.id)}
+                  >
                     <MdEdit size={22} color="#ffffff" />
                   </button>
 
-                  <button className="action-btn delete-btn" title="Delete Post">
-                    <MdDelete size={22} color="#ffffff" />
+                  <button
+                    className="action-btn delete-btn"
+                    title="Delete Post"
+                    onClick={() => handleDelete(post.id)}
+                  >
+                    <MdDelete size={20} color="#ffffff" />
                   </button>
                 </div>
-              </div><div className="post-card-content">
-                  <div className="post-meta">
-                    <span className="post-author">By admin</span>
-                    <span className="post-data">Recent</span>
-                  </div>
+              </div>
 
-                  <h3 className="post-card-title">{post.title}</h3>
-
-                  <p className="post-card-description">
-                    {post.description}
-                  </p>
-
-                  <button className="read-more-btn" onClick={() => handlePost(post.id)}>
-                    Read More
-                  </button> 
+              <div className="post-card-content">
+                <div className="post-meta">
+                  <span className="post-author">By {post.author || "Anonymous"}</span>
+                  <span className="post-date">
+                    {post.date || new Date(post.createdAt || Date.now()).toLocaleDateString()}
+                  </span>
                 </div>
-                </>
 
-            ))}
-             </div>
-          </div>
+                <h3 className="post-card-title">{post.title}</h3>
+                <p className="post-card-description">
+                  {post.description || post.content || post.excerpt}
+                </p>
+                <button className="read-more-btn" onClick={handleClick}>Read More</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
         </section>
       </main>
     </div>
