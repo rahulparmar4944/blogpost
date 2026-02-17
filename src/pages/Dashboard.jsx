@@ -32,12 +32,20 @@ const handleLogout = () => {
     // localStorage.clear()
     navigate("/login");
   };
+  const handleEdit = (postId) => {
+    Navigate(`/edit-post/${postId}`);
+}
 
+const handlePost = (postId) => {
+    Navigate(`/post/${postId}`);
+}
   return (
 
     <div className="dashboard-page">
 
-       <Navbar onLogout={handleLogout} />
+       <Navbar 
+       
+       onLogout={handleLogout} />
 
       <main className="dashboard-main">
         <div className="dashboard-welcome">
@@ -77,12 +85,12 @@ const handleLogout = () => {
             {posts.map((post) => (
               <><div className="post-image-container">
                 <img
-                  src={post.image || ""}
+                  src={post.image}
                   alt="Post"
                   className='post-card-image' />
 
                 <div className="post-actions">
-                  <button className="action-btn edit-btn" title="Edit Post">
+                  <button className="action-btn edit-btn" title="Edit Post" onClick={() => handleEdit(post.id)}>
                     <MdEdit size={22} color="#ffffff" />
                   </button>
 
@@ -102,10 +110,11 @@ const handleLogout = () => {
                     {post.description}
                   </p>
 
-                  <button className="read-more-btn">
+                  <button className="read-more-btn" onClick={() => handlePost(post.id)}>
                     Read More
-                  </button>
-                </div></>
+                  </button> 
+                </div>
+                </>
 
             ))}
              </div>

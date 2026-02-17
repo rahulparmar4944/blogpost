@@ -59,9 +59,7 @@ const Register = () => {
 }
 
   const handleInputChange = (e) => {
-    //console.log(e.target.name,e.target.value)
-
-    //e.target.name = e.target.value
+    
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,

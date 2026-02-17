@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = ({ onLogout }) => {
+    const user = JSON.parse(localStorage.getItem("authData"));
 
   return (
     <nav className="navbar">
@@ -21,10 +22,14 @@ const Navbar = ({ onLogout }) => {
                 <NavLink to="/creat-post" className="nav-item">
                     <FaPlusSquare className="nav-icon" /> Ctreate post
                 </NavLink>
+
+                <NavLink to="/analytics" className="nav-item">
+                    <FaPlusSquare className="nav-icon" /> Analytics
+                </NavLink>
             </div>
 
             <div className="navbar-actions">
-                <span className="user-name">Hi, User</span>
+                <span className="user-name">Hi, {user.name}</span>
 
                 <button className="logout-btn" onClick={onLogout}>
                     <FaSignOutAlt  /> Logout
