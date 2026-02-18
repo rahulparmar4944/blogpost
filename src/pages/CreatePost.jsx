@@ -12,6 +12,7 @@ import "./CreatePost.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams} from "react-router-dom";
 
+
 const CreatePost = () => {
 const user = JSON.parse(localStorage.getItem("authData"));
 const [formData, setFormData] = useState({
@@ -26,6 +27,7 @@ const [imagePreview, setImagePreview] = useState(null);
 const [isEditMode, setIsEditMode] = useState(false);
 const fileInputRef = React.useRef(null);
 const { id } = useParams();
+const navigate = useNavigate();
 
 
 useEffect(() => {
@@ -88,9 +90,25 @@ setErrors({
 const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-        console.log("Form submitted:", formData);
+        if(isEditMode){
+            fetch(`http://localhost:3000/posts/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+        } else {
+            fetch("http://localhost:3000/posts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+        }
+        resetForm();
     }
-    resetForm();
   };
 
   const resetForm = () => {
@@ -157,6 +175,7 @@ return (
               type="text"
               name="title"
               value={formData?.title}
+              defaultValue={formData?.title}
               className="form-control"
               placeholder="Enter a catchy title..."
               onChange={handleChange}
@@ -175,6 +194,7 @@ return (
               type="text"
               name="author"
               value={formData?.author}
+              defaultValue={formData?.author}
               className="form-control"
               placeholder="enter authdata"
               onChange={handleChange}
@@ -187,6 +207,7 @@ return (
           <textarea
             name="description"
             value={formData?.description}
+            defaultValue={formData?.description}
             className="form-control"
             placeholder="what's on your mimnd? write your story here"
             onChange={handleChange}

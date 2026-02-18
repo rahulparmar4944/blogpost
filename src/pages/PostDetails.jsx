@@ -2,8 +2,27 @@ import React from 'react'
 import Navbar from '../components/Navbar';
 import "./PostDetails.css";
 import { FaArrowLeft, FaUser, FaCalendarAlt, FaClock} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const PostDetails = () => {
+    const [post, setPost] = useState({});
+    const navigate = useNavigate();
+
+    const fetchPostDetails = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/posts/${window.location.pathname.split("/post/")[1]}`);
+            const data = await response.json();
+            setPost(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPostDetails();
+    }, []);
+
   return (
     <div className="post-details"> 
     <Navbar />
@@ -19,21 +38,21 @@ const PostDetails = () => {
                 <div className="post-category"> Journal </div>
 
                 <h1 className="post-full-title">
-                    Sample Blog Post Title
+                    {post.title}
                 </h1>
 
                 <div className="post-author-meta">
                     <div className="author-info">
                         <div className="author-avatar">
-                            A
+                            <FaUser size={40} color="#888" />
                         </div>
 
                         <div>
-                            <span className="author-name">Admin</span>
+                            <span className="author-name">{post.author || "Anonymous"}</span>
 
                             <div className="post-data-row">
                                 <span>
-                                    <FaCalendarAlt /> 16/02/2026 
+                                    <FaCalendarAlt /> {post.createAt ? new Date(post.createAt).toLocaleDateString() : ''}
                                 </span>
 
                                 <span className="dot"></span>
@@ -49,20 +68,14 @@ const PostDetails = () => {
 
             <div className="post-featured-image">
                 <img 
-                    src="" 
+                    src={post.image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500"} 
                     alt="Post"
                 />
             </div>
 
             <div className="post-body">
                 <p>
-                    This is a static blog post content example.
-                    You can keep your full UI design withut any JavaScript logic.
-                </p>
-
-                <p>
-                    This layout structure remains exactly the same as your dynamic
-                    but now it works as a pure static UI component.
+                    {post.description || post.content || post.excerpt}
                 </p>
             </div>
 

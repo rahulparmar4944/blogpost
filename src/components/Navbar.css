@@ -79,7 +79,7 @@
     font-family: 1.1rem;
 }
 
-.nabar-actions {
+.navbar-actions {
     display: flex;
     align-items: center;
     gap: 1.5rem;

@@ -61,6 +61,21 @@ const Analytics = () => {
 
   const COLORS = ["#0088fe", "#00d49f", "#ffbb28", "#ff8042"];
 
+  const handleEdit = (post) => {
+    navigate(`/edit-post/${post.id}`);
+  };
+
+const handleDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/posts/${id}`, {
+        method: "DELETE",
+      });
+      setPosts(posts.filter((post) => post.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="analytics-page">
       <Navbar />
@@ -154,7 +169,7 @@ const Analytics = () => {
                         </button>
                         <button 
                             className="delete-btn"
-                            onClick={() => handleEdit(post.id)}
+                            onClick={() => handleDelete(post.id)}
                             title="Delete"
                         >
                             🗑

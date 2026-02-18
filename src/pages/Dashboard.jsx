@@ -11,10 +11,6 @@ const Dashboard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-const handleClick = (postId) => {
-navigate(`/post-details/${postId}`);
-};
-
    const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:3000/posts");
@@ -29,27 +25,32 @@ navigate(`/post-details/${postId}`);
     fetchData();
   }, []);
 
-const handleLogout = () => {
 
-    console.log("click from dashboard");
-    localStorage.removeItem("loginData");
-    localStorage.removeItem("authData");
-    // localStorage.clear()
-    navigate("/login");
-  };
-  
    const handleEdit = (post) => {
     navigate(`/edit-post/${post.id}`);
   };
 
-const handleDelete = (postId) => {
-    navigate(`/post/${postId}`);
+const handleView = (post) => {
+    navigate(`/post/${post.id}`);
 }
+
+const handleDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/posts/${id}`, {
+        method: "DELETE",
+      });
+      setPosts(posts.filter((post) => post.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   return (
 
     <div className="dashboard-page">
 
-       <Navbar onLogout={handleLogout} />
+       <Navbar />
 
       <main className="dashboard-main">
         <div className="dashboard-welcome">
@@ -98,7 +99,7 @@ const handleDelete = (postId) => {
                   <button
                     className="action-btn edit-btn"
                     title="Edit Post" 
-                    onClick={() =>  handleEdit(post.id)}
+                    onClick={() =>  handleEdit(post)}
                   >
                     <MdEdit size={22} color="#ffffff" />
                   </button>
@@ -125,7 +126,7 @@ const handleDelete = (postId) => {
                 <p className="post-card-description">
                   {post.description || post.content || post.excerpt}
                 </p>
-                <button className="read-more-btn" onClick={handleClick}>Read More</button>
+                <button className="read-more-btn" onClick={() => handleView(post)}>Read More</button>
               </div>
             </div>
           ))

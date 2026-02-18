@@ -1,11 +1,12 @@
-
 import { createContext, useState, useEffect, useContext } from "react";
+import { children } from "react";
+import "./Theme.css";
 
 const ThemeContext = createContext();
 
 export const useTheme = () => useContext(ThemeContext);
 
-export const ThemeProvider = ({ Children }) => {
+export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     return savedTheme || "light";
@@ -22,7 +23,7 @@ export const ThemeProvider = ({ Children }) => {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {Children}
+      {children}
     </ThemeContext.Provider>
   );
 };
