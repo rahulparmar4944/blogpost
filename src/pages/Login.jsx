@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import './Login.css';
 import { Link, useNavigate  } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 const Login = () => {
 
@@ -49,14 +50,15 @@ const handleClick = (e) => {
       const user = JSON.parse(localStorage.getItem("authData"));
       if(user && loginData.email === user.email && loginData.password === user.password){
         localStorage.setItem("loginData",JSON.stringify(loginData));
+        toast.success('Login successful!')
         navigate("/Dashboard")
       }
       else{
-        alert('Invalid email and password')
+        toast.error('Invalid email and password')
       } 
   }
   else{
-    alert('something went wrong !')
+    toast.error('Please fill all fields correctly')
   }
   };
 

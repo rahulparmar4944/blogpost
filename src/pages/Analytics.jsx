@@ -14,6 +14,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Analytics = () => {
 
@@ -21,6 +23,8 @@ const Analytics = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const postsPage = 5;
+
+    const navigate = useNavigate();
 
     useEffect(() => {
       fetch('/db.json')
@@ -63,16 +67,18 @@ const Analytics = () => {
 
   const handleEdit = (post) => {
     navigate(`/edit-post/${post.id}`);
+    toast.info("Redirecting to edit post...");
   };
 
-const handleDelete = async (id) => {
+const handleDelete = async (post) => {
     try {
-      await fetch(`http://localhost:3000/posts/${id}`, {
+      await fetch(`http://localhost:3000/posts/${post.id}`, {
         method: "DELETE",
       });
-      setPosts(posts.filter((post) => post.id !== id));
+      setPosts(posts.filter((p) => p.id !== post.id));
     } catch (error) {
       console.log(error);
+      toast.error("Failed to delete post");
     }
   };
 
@@ -162,14 +168,14 @@ const handleDelete = async (id) => {
                       <td className="action-button">
                         <button 
                             className="edit-btn"
-                            onClick={() => handleEdit(post.id)}
+                            onClick={() => handleEdit(post)}
                             title="Edit"
                         >
                             ✏️
                         </button>
                         <button 
                             className="delete-btn"
-                            onClick={() => handleDelete(post.id)}
+                            onClick={() => handleDelete(post)}
                             title="Delete"
                         >
                             🗑

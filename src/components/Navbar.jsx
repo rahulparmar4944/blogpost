@@ -1,5 +1,6 @@
 import {
     FaBlog,
+    FaChartLine,
     FaHome,
     FaMoon,
     FaPlusSquare,
@@ -10,10 +11,12 @@ import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 import { useTheme } from "./context/ThemeContext";
 import "./context/Theme.css";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem("authData"));
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log("click from dashboard");
@@ -41,7 +44,7 @@ const Navbar = () => {
           </NavLink>
 
           <NavLink to="/analytics" className="nav-item">
-            <FaPlusSquare className="nav-icon" /> Analytics
+            <FaChartLine className="nav-icon" /> Analytics
           </NavLink>
         </div>
 

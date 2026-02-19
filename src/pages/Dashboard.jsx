@@ -5,6 +5,7 @@ import { MdEdit, MdDelete } from 'react-icons/md';
 import { FaPlus } from 'react-icons/fa';
 import './Dashboard.css'
 import {useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -28,10 +29,12 @@ const Dashboard = () => {
 
    const handleEdit = (post) => {
     navigate(`/edit-post/${post.id}`);
+    toast.info("Redirecting to edit post...");
   };
 
 const handleView = (post) => {
     navigate(`/post/${post.id}`);
+    toast.info("Redirecting to post details...");
 }
 
 const handleDelete = async (id) => {
@@ -42,6 +45,7 @@ const handleDelete = async (id) => {
       setPosts(posts.filter((post) => post.id !== id));
     } catch (error) {
       console.log(error);
+      toast.error("Failed to delete post");
     }
   };
 

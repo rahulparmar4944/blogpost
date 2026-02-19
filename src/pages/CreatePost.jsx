@@ -10,7 +10,9 @@ FaRegPaperPlane,
 } from "react-icons/fa";
 import "./CreatePost.css";
 import { useEffect, useState } from "react";
+import { useRef } from "react";
 import { useNavigate, useParams} from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 const CreatePost = () => {
@@ -25,7 +27,7 @@ imageType: "url",
 const [errors, setErrors] = useState({});
 const [imagePreview, setImagePreview] = useState(null);
 const [isEditMode, setIsEditMode] = useState(false);
-const fileInputRef = React.useRef(null);
+const fileInputRef = useRef(null);
 const { id } = useParams();
 const navigate = useNavigate();
 
@@ -54,8 +56,6 @@ useEffect(() => {
         fetchPostToEdit();
     }
 }, [id]);
-
-
 
 const validate = () => {
 const newErrors = {};
@@ -87,39 +87,81 @@ setErrors({
 });
 };
 
+
+
 const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-        if(isEditMode){
+        const postData = {
+            title: formData.title,
+            description: formData.description,
+            author: formData.author,
+            image: formData.imageType === "url" ? formData.imageUrl : imagePreview,
+            createAt: new Date().toISOString(),
+        };
+        if (isEditMode) {
             fetch(`http://localhost:3000/posts/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(postData),
+            })
+            .then((res) => {
+                if (res.ok) {
+                    navigate("/dashboard");
+                    toast.success("Post updated successfully!");
+                } else {
+                    console.error("Failed to update post");
+                    toast.error("Failed to update post");
+                }
+            })
+            .catch((error) => {
+                console.error("Error updating post:", error);
+                toast.error("Failed to update post");
             });
+            
         } else {
             fetch("http://localhost:3000/posts", {
-                method: "POST",
+                method: "POST", 
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(postData), 
+            })
+            .then((res) => {
+                if (res.ok) {
+                    navigate("/dashboard");
+                    toast.success("Post created successfully!");
+                } else {
+                    console.error("Failed to create post");
+                    toast.error("Failed to create post");
+                } 
+            })
+            .catch((error) => {
+                console.error("Error creating post:", error);
+                toast.error("Failed to create post");
             });
+            
         }
         resetForm();
     }
   };
 
   const resetForm = () => {
-    setFormData({
-      title: "",
-      description: "",
-      dueDate: "",
-      priority: "Low",
-      imageType: "url",
-      imageUrl: "",
-    });
+    if (isEditMode && id) {
+        fetchPostToEdit();
+    } else {
+        setFormData({
+            title: "",
+            description: "",
+            author: user.name || "",
+            imageUrl: "",
+            imageType: "url",
+        });
+        setImagePreview(null);
+    }
+    setErrors({});
   };
 
 const handleFileTypeChange = (type) => {
@@ -161,8 +203,10 @@ return (
 
   <div className="create-post-container">
     <header className="form-header">
-      <h1>Create New Post</h1>
-      <p>Share your thoughts and stories with the world</p>
+      <h1>{isEditMode ? "Edit Post" : "Create New Post"}</h1>
+      <p>
+          {isEditMode ? "Make changes to your post and update it." : "Share your thoughts, stories, or ideas with the world."}
+      </p>
     </header>
 
     <div className="post-form-card">
@@ -176,7 +220,7 @@ return (
               name="title"
               value={formData?.title}
               defaultValue={formData?.title}
-              className="form-control"
+              className={`form-control ${errors.title ? "input-error" : ""}`}
               placeholder="Enter a catchy title..."
               onChange={handleChange}
             />
@@ -196,7 +240,7 @@ return (
               value={formData?.author}
               defaultValue={formData?.author}
               className="form-control"
-              placeholder="enter authdata"
+              placeholder="Enter author name"
               onChange={handleChange}
             />
           </div>
@@ -209,7 +253,7 @@ return (
             value={formData?.description}
             defaultValue={formData?.description}
             className="form-control"
-            placeholder="what's on your mimnd? write your story here"
+            placeholder="what's on your mind? write your story here"
             onChange={handleChange}
           />
           {errors.description && (
@@ -277,7 +321,7 @@ return (
 
         <div className="form-actions-row">
           <button type="submit" className="submit-btn">
-            <FaRegPaperPlane /> Publish Post
+            <FaRegPaperPlane  /> {isEditMode ? "Update Post" : "Publish Post"} 
           </button>
 
           <button type="button" className="cancel-btn">

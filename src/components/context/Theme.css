@@ -44,11 +44,13 @@
 [data-theme="dark"] .dashboard-welcome p,
 [data-theme="dark"] .post-meta,
 [data-theme="dark"] .post-card-description,
-[data-theme="dark"] .dash-card h3 {
+[data-theme="dark"] .dash-card h3,
+[data-theme="dark"] .dash-number {
   color: #94a3b8;
 }
 
-[data-theme="dark"] .dash-card [data-theme="dark"] .post-card {
+[data-theme="dark"] .dash-card, 
+[data-theme="dark"] .post-card {
   background: #1e293b;
   border-color: #334155;
 }
@@ -87,6 +89,10 @@
   color: #f8fafc;
 }
 
+[data-theme="dark"] .form-control::placeholder {
+  color: #94a3b8;
+}
+
 [data-theme="dark"] .form-control:focus {
   border-color: #818cf8;
   background-color: #1e293b;
@@ -101,7 +107,7 @@
   color: #f8fafc;
 }
 
-[data-theme="dark"] .image-source-tabs {
+[data-theme="dark"] .image-source-tags {
   background: #334155;
 }
 
@@ -133,13 +139,13 @@
 }
 
 [data-theme="dark"] .chart-card,
-[data-theme="dark"] .post-table-section {
+[data-theme="dark"] .posts-table-section {
     background: #1e293b;
     border-color: #334155;
 }
 
 [data-theme="dark"] .chart-card h3,
-[data-theme="dark"] .post-table-section h3 {
+[data-theme="dark"] .posts-table-section h3 {
     color: #cbd5e1;
 }
 
