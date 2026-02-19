@@ -22,7 +22,7 @@ const Analytics = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const postsPage = 5;
+    const postsPage = 4;
 
     const navigate = useNavigate();
 

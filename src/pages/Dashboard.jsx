@@ -2,15 +2,17 @@
 import Navbar from '../components/Navbar';
 import { Navigate, useNavigate } from "react-router-dom";
 import { MdEdit, MdDelete } from 'react-icons/md';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaStar } from 'react-icons/fa';
 import './Dashboard.css'
 import {useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import Favorites from './Favorites';  
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]);
 
    const fetchData = async () => {
     try {
@@ -50,6 +52,7 @@ const handleDelete = async (id) => {
   };
 
 
+
   return (
 
     <div className="dashboard-page">
@@ -84,7 +87,7 @@ const handleDelete = async (id) => {
         <section className="posts-section">
           <div className="section-header">
             <h2 className="section-title">Recent Feed</h2>
-            <button className="create-shortcut-btn">
+            <button className="create-shortcut-btn" onClick={() => navigate("/creat-post")}>
               <FaPlus /> New Post
             </button>
           </div>
@@ -98,6 +101,9 @@ const handleDelete = async (id) => {
                   alt={post.title}
                   className="post-card-image"
                 />
+                <button className={`favorites-btn ${favorites.includes(post.id) ? 'active' : ''}`}>
+                  <FaStar size={22} color="#ffffff" />
+                </button> 
 
                 <div className="post-actions">
                   <button

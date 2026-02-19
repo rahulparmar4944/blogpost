@@ -5,6 +5,7 @@ import {
     FaMoon,
     FaPlusSquare,
     FaSignOutAlt,
+    FaStar,
     FaSun,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
@@ -45,6 +46,10 @@ const Navbar = () => {
 
           <NavLink to="/analytics" className="nav-item">
             <FaChartLine className="nav-icon" /> Analytics
+          </NavLink>
+
+          <NavLink to="/favorites" className="nav-item">
+            <FaStar className="nav-icon" /> Favorites
           </NavLink>
         </div>
 
