@@ -282,7 +282,7 @@ return (
                   Upload File
                 </button>
               </div>
-              {formData.imageType === "url" ? (
+            {formData.imageType === "url" && (
                 <div className="input-wrapper">
                   <FaLink className="input-icon" />
                   <input
@@ -294,19 +294,22 @@ return (
                     onChange={handleChange}
                   />
                 </div>
-              ) : (
-                <div className="image-upload-area" onClick={triggerFileSelect} style={{ cursor: 'pointer' }}>
-                  <FaCloudUploadAlt className="upload-icon" />
+              )}
+
+                {formData.imageType === "upload" && (
+                  
+                <div className={`image-upload-area ${errors.imageFile ? "error" : ""}`} onClick={triggerFileSelect} style={{ cursor: 'pointer' }}>
+                  <FaCloudUploadAlt  className="upload-icon" />
                   <p>click to upload image from your device</p>
                   <input
                     type="file"
                     ref={fileInputRef}
-                    style={{ display: 'none' }}
+                    style={{ display: 'none'}}
                     accept="image/*"
                     onChange={handleFileChange}
                   />
                 </div>
-              )}
+                )}
             </>
           ) : (
             <div className="image-preview-container">
@@ -324,7 +327,7 @@ return (
             <FaRegPaperPlane  /> {isEditMode ? "Update Post" : "Publish Post"} 
           </button>
 
-          <button type="button" className="cancel-btn">
+          <button type="button" className="cancel-btn" onClick={resetForm}>
             Clear Form
           </button>
         </div>

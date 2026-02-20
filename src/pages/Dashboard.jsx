@@ -14,6 +14,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
 
+  const user = JSON.parse(localStorage.getItem("authData"));
+
    const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:3000/posts");
@@ -23,9 +25,24 @@ const Dashboard = () => {
       console.log(error);
     }
   };
-  
+
+  const toggleFavorite = (e, postId) => {
+    let newFavorites;
+    if (favorites.includes(postId)) {
+      newFavorites = favorites.filter((id) => id !== postId);
+      toast.info("Removed from favorites");
+    } else {
+      newFavorites = [...favorites, postId];
+      toast.success("Added to favorites");
+    }
+    setFavorites(newFavorites);
+    localStorage.setItem('favorites', JSON.stringify(newFavorites));
+  }
+
     useEffect(() => {
     fetchData();
+    const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setFavorites(savedFavorites);
   }, []);
 
 
@@ -62,7 +79,7 @@ const handleDelete = async (id) => {
       <main className="dashboard-main">
         <div className="dashboard-welcome">
           <div className="welcome-text">
-            <h1>Wellcome to your Dashboard</h1>
+            <h1>Wellcome {user?.name || "User"}</h1>
             <p>Manage your posts, track engagement,and connect with your audience</p>
           </div>
         </div>
@@ -101,7 +118,8 @@ const handleDelete = async (id) => {
                   alt={post.title}
                   className="post-card-image"
                 />
-                <button className={`favorites-btn ${favorites.includes(post.id) ? 'active' : ''}`}>
+                <button className={`favorites-btn ${favorites.includes(post.id) ? 'active' : ''}`}
+                  onClick={(e) => toggleFavorite(e, post.id)}>
                   <FaStar size={22} color="#ffffff" />
                 </button> 
 
